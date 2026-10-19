@@ -1,0 +1,115 @@
+# MCP E-Projet : architecture v1
+
+## Objectif
+
+Un MCP **perso et local** qui remplit E-Projet à ma place (saisie manuelle = corvée), en passant par la session web (Spring Security + cookie `JSESSIONID`).
+
+## Décisions
+
+- **Transport** : stdio (le MCP est lancé localement par Claude)
+- **Usage** : perso (un seul utilisateur, mes propres identifiants)
+- **Portée v1** : lecture **et** écriture dès le début
+- **Auth** : form login Spring Security
+  - `POST /EProjet-1/j_spring_security_check`
+  - Body `application/x-www-form-urlencoded` : `username`, `password`
+  - Session = cookie `JSESSIONID`
+
+## Structure du projet
+
+```
+mcp-eprojet/
+├── src/
+│   ├── index.ts          # démarre le serveur MCP (stdio)
+│   ├── config.ts         # variables d'env validées (zod)
+│   ├── client/
+│   │   ├── session.ts    # login, cookie, mutex, relogin auto
+│   │   └── http.ts       # api(): cookie + détection 302 -> /login + 1 retry
+│   ├── services/         # logique métier, 1 fichier par domaine
+│   │   └── ...           # à définir selon les écrans à remplir
+│   ├── tools/            # outils exposés à Claude (nom, description, schéma zod)
+│   │   └── ...
+│   └── utils/
+│       ├── logger.ts     # logs sur stderr uniquement (stdout = protocole MCP)
+│       └── parse.ts      # parsing HTML (cheerio) si pas de JSON
+├── .env.example          # EPROJET_BASE_URL, EPROJET_USER, EPROJET_PASS
+├── package.json
+└── README.md
+```
+
+## Gestion de session
+
+- Login **paresseux** (au premier appel)
+- **Mutex** : un seul login à la fois, même si plusieurs outils tournent en parallèle
+- Expiration = réponse `302` avec `Location` contenant `login` -> relogin -> **1 seul retry**
+- Échec de login (`login?error`) = erreur claire, **pas de boucle** (évite de bloquer le compte)
+- Ne jamais logger le mot de passe ni le cookie
+
+## Écriture : règles de sécurité
+
+Comme les actions sont actives dès la v1, on se protège des erreurs :
+
+- **`dry_run` par défaut** sur chaque outil d'écriture : retourne ce qui serait envoyé, sans envoyer
+- Paramètre explicite `confirmer: true` pour exécuter vraiment
+- **Pas de suppression** en v1 (ou outil séparé, bien nommé)
+- **Journal local** des écritures (`actions.log` : date, outil, payload sans secrets)
+- Après chaque écriture : **relire** la donnée pour confirmer à Claude que c'est bien enregistré
+- Les formulaires web classiques peuvent exiger des champs cachés (CSRF, token de formulaire) : toujours faire un **GET du formulaire avant le POST** et reprendre ces champs
+
+## Design des outils
+
+- Nommés par **intention** (`saisir_...`, `lister_...`), pas par endpoint
+- 5 à 10 outils maximum, descriptions précises (quand l'utiliser, format des dates, valeurs autorisées)
+- Lecture : réponses **allégées** + limite par défaut (ex. 20)
+- Ecriture : validation zod stricte (dates, montants, énumérations) avant tout envoi
+- Erreurs lisibles : "session expirée", "champ X invalide", "accès refusé"
+
+### Catalogue d'outils (à compléter)
+
+| Outil              | Type     | Endpoint                                             | Entrées                                                        | Sortie                                      |
+| ------------------ | -------- | ---------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------- |
+| `tester_connexion` | lecture  | `GET {chemin}`                                       | `chemin`                                                       | statut + titre                              |
+| `creer_tache`      | écriture | `GET /taches/useform` puis `POST /taches/createuser` | voir `docs/superpowers/specs/2026-10-19-creer-tache-design.md` | `dry_run` par défaut : payload ou candidats |
+
+## Si le site ne renvoie que du HTML
+
+- Couche `parse.ts` avec cheerio, sélecteurs isolés au même endroit
+- Quelques tests sur des pages réelles sauvegardées (si le HTML change, on le voit vite)
+- Pour les écritures : reproduire exactement le POST du formulaire (champs cachés compris), repéré dans l'onglet Network
+
+## Configuration côté Claude (stdio)
+
+```json
+{
+  "mcpServers": {
+    "eprojet": {
+      "command": "node",
+      "args": ["/chemin/vers/mcp-eprojet/dist/index.js"],
+      "env": {
+        "EPROJET_BASE_URL": "https://e-projet.example.com/EProjet-1",
+        "EPROJET_USER": "...",
+        "EPROJET_PASS": "..."
+      }
+    }
+  }
+}
+```
+
+## Points d'attention
+
+- **Autorisation** : c'est un outil de l'entreprise, prévenir l'IT / le responsable que tu automatises ta propre saisie avec ton compte (et demander s'il existe une API officielle)
+- **Rythme** : pas de rafale de requêtes, petite pause entre les écritures
+- **Validation humaine** : garder `dry_run` actif tant que les outils ne sont pas rodés
+
+## Plan de construction
+
+1. Client HTTP + session (login, cookie, relogin) testé sur une page protégée
+2. 1 outil de **lecture** (valider le parsing)
+3. 1 outil d'**écriture** en `dry_run`, puis en réel sur une donnée de test
+4. Ajouter les autres outils un par un
+5. README + journal des actions
+
+## Questions ouvertes
+
+- Quels écrans / formulaires remplis-tu le plus souvent ?
+- Les pages renvoient-elles du JSON (XHR) ou du HTML ?
+- Y a-t-il des champs cachés ou un token à reprendre dans les formulaires ?
