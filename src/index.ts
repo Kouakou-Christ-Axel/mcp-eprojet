@@ -2,6 +2,11 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { api } from "./client/http.js";
 import { creerTacheDescription, creerTacheHandler, creerTacheShape } from "./tools/creerTache.js";
+import {
+  listerTachesDescription,
+  listerTachesHandler,
+  listerTachesShape,
+} from "./tools/listerTaches.js";
 import { ping, pingShape } from "./tools/ping.js";
 import { logAction } from "./utils/actionsLog.js";
 
@@ -20,6 +25,12 @@ server.registerTool(
   "creer_tache",
   { description: creerTacheDescription, inputSchema: creerTacheShape },
   creerTacheHandler({ api, log: logAction }),
+);
+
+server.registerTool(
+  "lister_taches",
+  { description: listerTachesDescription, inputSchema: listerTachesShape },
+  listerTachesHandler({ api }),
 );
 
 await server.connect(new StdioServerTransport());
