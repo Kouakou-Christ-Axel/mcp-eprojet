@@ -1,0 +1,127 @@
+<script>
+  var tsSeuilDepassementBudgetPourcentage = 50;
+</script>
+<form
+  id="timeSheetTacheParJourActivityUserByProjet"
+  action="/EProjet-1/timeSheetTacheParJour/TimeSheetTacheActivitySaveUpdate"
+  method="POST"
+>
+  <select id="timeSheetTachePar_timeSheetJourId_tabActivityStarted">
+    <option value="/EProjet-1/timeSheetTacheParJour/activityByDay/399" selected="selected">
+      Mardi 20-10-2026
+    </option>
+    <option value="/EProjet-1/timeSheetTacheParJour/activityByDay/398">
+      Lundi 19-10-2026
+    </option></select
+  ><button type="submit">OK</button>
+  <table id="tabActivityStarted">
+    <tbody>
+      <tr>
+        <td>
+          <input type="hidden" name="listTaches[0].reference" value="PRJ-576-0417" /><input
+            type="hidden"
+            name="listTaches[0].projetId"
+            value="576"
+          /><input type="hidden" name="listTaches[0].id" value="7800" />PRJ-576-0417
+        </td>
+        <td>Tâche PRJ-576-0417</td>
+        <td>
+          <select name="listTaches[0].statutTacheId">
+            <option value="-1">A Faire</option>
+            <option value="-3" selected="selected">En cours</option>
+            <option value="-2">Bloqué</option>
+            <option value="1">Prêt pour QA</option>
+            <option value="-4">Terminée</option>
+            <option value="-5">Annulée</option>
+          </select>
+        </td>
+        <td><input type="number" name="listTaches[0].pourcentageAvanc" value="40" /></td>
+        <td>
+          <input type="hidden" name="listTaches[0].timeSheetJourId" value="399" /><input
+            type="number"
+            name="listTaches[0].nbHeureTravaille"
+            value=""
+          />
+        </td>
+        <td><input type="text" name="listTaches[0].commentaire" value="" /></td>
+        <td class="ts-cell-hprev">0.25</td>
+        <td class="ts-cell-hreelle">0.5</td>
+      </tr>
+      <tr>
+        <td>
+          <input type="hidden" name="listTaches[1].reference" value="PRJ-576-0420" /><input
+            type="hidden"
+            name="listTaches[1].projetId"
+            value="576"
+          /><input type="hidden" name="listTaches[1].id" value="7801" />PRJ-576-0420
+        </td>
+        <td>Tâche PRJ-576-0420</td>
+        <td>
+          <select name="listTaches[1].statutTacheId">
+            <option value="-1" selected="selected">A Faire</option>
+            <option value="-3">En cours</option>
+            <option value="-2">Bloqué</option>
+            <option value="1">Prêt pour QA</option>
+            <option value="-4">Terminée</option>
+            <option value="-5">Annulée</option>
+          </select>
+        </td>
+        <td><input type="number" name="listTaches[1].pourcentageAvanc" value="" /></td>
+        <td>
+          <input type="hidden" name="listTaches[1].timeSheetJourId" value="399" /><input
+            type="number"
+            name="listTaches[1].nbHeureTravaille"
+            value="1.5"
+          />
+        </td>
+        <td><input type="text" name="listTaches[1].commentaire" value="" /></td>
+        <td class="ts-cell-hprev">2</td>
+        <td class="ts-cell-hreelle">3</td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+<form
+  id="timeSheetTacheAvenirUserByProjet"
+  action="/EProjet-1/timeSheetTacheParJour/TimeSheetTacheActivitySaveUpdate"
+  method="POST"
+>
+  <select id="timeSheetTachePar_timeSheetJourId_tabActivityAvenir">
+    <option value="/EProjet-1/timeSheetTacheParJour/activityByDay/399">Mardi 20-10-2026</option>
+  </select>
+  <table id="tabActivityAvenir">
+    <tbody>
+      <tr>
+        <td>
+          <input type="hidden" name="listTaches[0].reference" value="PRJ-576-0500" /><input
+            type="hidden"
+            name="listTaches[0].projetId"
+            value="576"
+          /><input type="hidden" name="listTaches[0].id" value="7800" />PRJ-576-0500
+        </td>
+        <td>Tâche PRJ-576-0500</td>
+        <td>
+          <select name="listTaches[0].statutTacheId">
+            <option value="-1" selected="selected">A Faire</option>
+            <option value="-3">En cours</option>
+            <option value="-2">Bloqué</option>
+            <option value="1">Prêt pour QA</option>
+            <option value="-4">Terminée</option>
+            <option value="-5">Annulée</option>
+          </select>
+        </td>
+        <td><input type="number" name="listTaches[0].pourcentageAvanc" value="" /></td>
+        <td>
+          <input type="hidden" name="listTaches[0].timeSheetJourId" value="399" /><input
+            type="number"
+            name="listTaches[0].nbHeureTravaille"
+            value=""
+          />
+        </td>
+        <td><input type="text" name="listTaches[0].commentaire" value="" /></td>
+        <td class="ts-cell-hprev">1</td>
+        <td class="ts-cell-hreelle"></td>
+      </tr>
+    </tbody>
+  </table>
+</form>
