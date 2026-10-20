@@ -25,7 +25,11 @@ export type Resultat =
   | { candidats: Candidat[] };
 
 // Libellé exact du serveur (casse/accents) : c'est lui qui est envoyé.
-async function resoudreComposant(deps: Deps, projetId: string, saisi: string): Promise<string> {
+export async function resoudreComposant(
+  deps: Deps,
+  projetId: string,
+  saisi: string,
+): Promise<string> {
   const libelles = await chercherComposant(deps.api, projetId, saisi);
   const trouve = libelles.find((l) => normaliser(l) === normaliser(saisi));
   if (trouve) return trouve;
@@ -33,7 +37,11 @@ async function resoudreComposant(deps: Deps, projetId: string, saisi: string): P
 }
 
 // Un seul résultat, ou le nom exact parmi plusieurs ; sinon les candidats sont renvoyés.
-async function resoudreExterne(deps: Deps, projetId: string, nom: string): Promise<Candidat[]> {
+export async function resoudreExterne(
+  deps: Deps,
+  projetId: string,
+  nom: string,
+): Promise<Candidat[]> {
   const trouves = await chercherExterne(deps.api, projetId, nom);
   if (trouves.length === 0) throw new Error(`Aucun responsable externe "${nom}" dans ce projet`);
   const exacts = trouves.filter((c) => normaliser(c.nom) === normaliser(nom));

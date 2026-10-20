@@ -8,6 +8,11 @@ import {
   listerTachesShape,
 } from "./tools/listerTaches.js";
 import {
+  modifierTacheDescription,
+  modifierTacheHandler,
+  modifierTacheShape,
+} from "./tools/modifierTache.js";
+import {
   saisirTimesheetDescription,
   saisirTimesheetHandler,
   saisirTimesheetShape,
@@ -30,6 +35,12 @@ server.registerTool(
   "creer_tache",
   { description: creerTacheDescription, inputSchema: creerTacheShape },
   creerTacheHandler({ api, log: logAction }),
+);
+
+server.registerTool(
+  "modifier_tache",
+  { description: modifierTacheDescription, inputSchema: modifierTacheShape },
+  modifierTacheHandler({ api, log: logAction }),
 );
 
 server.registerTool(

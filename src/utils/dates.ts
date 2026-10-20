@@ -13,6 +13,13 @@ export function isoVersFr(iso: string): string {
   return `${j}/${m}/${a}`;
 }
 
+export function frVersIso(fr: string): string {
+  const [j, m, a] = fr.split("/");
+  const iso = `${a}-${m}-${j}`;
+  lire(iso);
+  return iso;
+}
+
 // ISO triable lexicalement ; même jour autorisé.
 export function verifierPeriode(debut: string, fin: string): void {
   lire(debut);

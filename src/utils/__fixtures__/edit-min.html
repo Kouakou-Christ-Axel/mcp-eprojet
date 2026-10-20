@@ -1,0 +1,26 @@
+<form action="/EProjet-1/taches/updateuser" method="POST">
+  <input id="id" name="id" type="hidden" value="7811" />
+  <input id="taches_id" name="id" type="hidden" disabled="disabled" value="7811" />
+  <select name="projetId"><option value=""></option><option value="576" selected="selected">Acme | Actions</option></select>
+  <input name="ordre" type="number" readonly="readonly" value="25919" />
+  <input name="reference" type="text" value="PRJ-576-0417" />
+  <input name="libelle" type="text" value="Creation d une tache de test" />
+  <select name="tacheParentId"><option value=""></option></select>
+  <select name="natureTache"><option value="TACHE" selected="selected">Tâche</option><option value="ANOMALIE">Anomalie</option></select>
+  <select name="gravite"><option value=""></option><option value="MINEURE">Mineure</option></select>
+  <select name="composant"></select>
+  <select name="typeTacheId"><option value="1" selected="selected">Formation</option><option value="2">Test</option></select>
+  <input checked="checked" value="true" name="tacheInterne" type="radio" />
+  <input value="false" name="tacheInterne" type="radio" />
+  <input name="pourcentageAvanc" type="number" value="40" />
+  <select name="statutTacheId"><option value=""></option><option value="-1">A Faire</option><option value="-3" selected="selected">En cours</option></select>
+  <select name="jalonId" disabled="disabled"><option value=""></option></select>
+  <select name="responsableInterneId"><option value="1234" selected="selected">MOI</option></select>
+  <select name="responsableExterneId"></select>
+  <select name="superviseurInterneId" disabled="disabled"><option value=""></option></select>
+  <input name="dateDebutPrev" type="text" value="20/10/2026" />
+  <input name="dateFinPrev" type="text" value="20/10/2026" />
+  <input name="nbJourPrev" type="number" value="0.25" />
+  <input name="nbHeurePrev" type="number" value="2.0" />
+  <textarea name="commentaire">ancien</textarea>
+</form>

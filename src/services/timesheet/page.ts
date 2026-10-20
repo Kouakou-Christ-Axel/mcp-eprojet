@@ -1,5 +1,5 @@
 import * as cheerio from "cheerio";
-import type { Option } from "../../utils/parse.js";
+import { serialiser, type Option } from "../../utils/parse.js";
 
 export interface LigneTs {
   index: number;
@@ -45,22 +45,7 @@ export function lirePageTimesheet(html: string): PageTs {
   const formulaires = TABLES.flatMap((tableId): FormTs[] => {
     const $form = $(`#${tableId}`).closest("form");
     if ($form.length === 0) return [];
-    const champs: [string, string][] = [];
-    $form.find("input[name],select[name],textarea[name]").each((_, e) => {
-      const $e = $(e);
-      const type = ($e.attr("type") ?? "").toLowerCase();
-      if (["button", "submit", "reset", "file"].includes(type)) return;
-      if (["checkbox", "radio"].includes(type) && $e.attr("checked") === undefined) return;
-      const nom = $e.attr("name")!;
-      if (e.tagName === "select") {
-        const choisie = $e.find("option[selected]").first();
-        champs.push([
-          nom,
-          (choisie.length ? choisie : $e.find("option").first()).attr("value") ?? "",
-        ]);
-      } else if (e.tagName === "textarea") champs.push([nom, $e.text()]);
-      else champs.push([nom, $e.attr("value") ?? ""]);
-    });
+    const champs = serialiser($, `#${tableId}`);
     const lignes: LigneTs[] = [];
     $(`#${tableId} tbody tr`).each((_, tr) => {
       const $tr = $(tr);
