@@ -80,21 +80,29 @@ Comme les actions sont actives dès la v1, on se protège des erreurs :
 
 ## Configuration côté Claude (stdio)
 
+Les identifiants restent dans `.env` (ignoré par git) et ne sont pas copiés dans la config de Claude : Node les charge avec `--env-file`.
+
+1. Compiler : `pnpm build` (produit `dist/`, sans les tests).
+2. Claude Code (à lancer une fois) :
+
+```
+claude mcp add eprojet --scope user -- node --env-file=E:/projects/mcp-eprojet/.env E:/projects/mcp-eprojet/dist/index.js
+```
+
+3. Claude Desktop (`claude_desktop_config.json`) :
+
 ```json
 {
   "mcpServers": {
     "eprojet": {
       "command": "node",
-      "args": ["/chemin/vers/mcp-eprojet/dist/index.js"],
-      "env": {
-        "EPROJET_BASE_URL": "https://e-projet.example.com/EProjet-1",
-        "EPROJET_USER": "...",
-        "EPROJET_PASS": "..."
-      }
+      "args": ["--env-file=E:/projects/mcp-eprojet/.env", "E:/projects/mcp-eprojet/dist/index.js"]
     }
   }
 }
 ```
+
+Après chaque modification du code : `pnpm build`, puis relancer Claude. `actions.log` est écrit à la racine du projet, quel que soit le dossier de lancement.
 
 ## Points d'attention
 
