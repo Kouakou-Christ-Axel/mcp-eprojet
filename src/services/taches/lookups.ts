@@ -9,7 +9,7 @@ export interface Candidat {
 
 const chemin = (base: string, terme: string) => `${base}${terme ? encodeURIComponent(terme) : "*"}`;
 
-async function lireJson<T>(res: Response, quoi: string): Promise<T> {
+export async function lireJson<T>(res: Response, quoi: string): Promise<T> {
   if (!res.ok || !(res.headers.get("content-type") ?? "").includes("json")) {
     throw new Error(`Réponse inattendue d'E-Projet pour ${quoi} (HTTP ${res.status})`);
   }
