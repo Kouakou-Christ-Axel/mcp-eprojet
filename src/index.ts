@@ -17,6 +17,7 @@ import {
   supprimerTacheHandler,
   supprimerTacheShape,
 } from "./tools/supprimerTache.js";
+import { lireTacheDescription, lireTacheHandler, lireTacheShape } from "./tools/lireTache.js";
 import {
   lireTimesheetDescription,
   lireTimesheetHandler,
@@ -66,6 +67,12 @@ server.registerTool(
 );
 
 const aujourdhui = () => new Date().toLocaleDateString("sv-SE");
+
+server.registerTool(
+  "lire_tache",
+  { description: lireTacheDescription, inputSchema: lireTacheShape },
+  lireTacheHandler({ api }),
+);
 
 server.registerTool(
   "lire_timesheet",
