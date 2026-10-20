@@ -1,4 +1,5 @@
 import type { api as apiReelle } from "../../client/http.js";
+import { journaliser } from "../../utils/actionsLog.js";
 import { lireFormulaire, normaliser, resoudreOption } from "../../utils/parse.js";
 import { chercherComposant, chercherExterne, type Candidat } from "./lookups.js";
 import { construirePayload } from "./payload.js";
@@ -37,14 +38,6 @@ async function resoudreExterne(deps: Deps, projetId: string, nom: string): Promi
   return trouves.length > 1 && exacts.length === 1 ? exacts : trouves;
 }
 
-function journaliser(deps: Deps, entree: object): void {
-  try {
-    deps.log(entree);
-  } catch (e) {
-    console.error("[eprojet] journal indisponible :", (e as Error).message);
-  }
-}
-
 export async function creerTache(input: CreerTacheInput, deps: Deps): Promise<Resultat> {
   const form = lireFormulaire(await (await deps.api("/taches/useform")).text());
   if (!form.caches.personneId) {
@@ -73,7 +66,7 @@ export async function creerTache(input: CreerTacheInput, deps: Deps): Promise<Re
     body: payload,
   });
   const location = res.headers.get("location");
-  journaliser(deps, { outil: "creer_tache", statut: res.status, location, payload: brut });
+  journaliser(deps.log, { outil: "creer_tache", statut: res.status, location, payload: brut });
   if (res.status >= 400) throw new Error(`E-Projet a refusé la tâche (HTTP ${res.status})`);
   return {
     mode: "envoyé",
