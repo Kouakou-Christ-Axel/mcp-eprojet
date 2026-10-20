@@ -3,12 +3,10 @@ import { frVersIso, isoVersFr, verifierPeriode } from "../../utils/dates.js";
 import { dureeVersJoursHeures } from "../../utils/duree.js";
 import { journaliser } from "../../utils/actionsLog.js";
 import { lireFormulaire, normaliser, resoudreOption, serialiser } from "../../utils/parse.js";
-import { lireTableauActivite } from "./activite.js";
 import type { Candidat } from "./lookups.js";
+import { trouverTache } from "./recherche.js";
 import type { ModifierTacheInput } from "./modifierSchema.js";
 import { resoudreComposant, resoudreExterne, type Deps } from "./service.js";
-
-const TABLES = ["tabActivityStarted", "tabActivityAvenir", "tabActivityTermineeRattrapage"];
 
 export type Changements = Record<string, { avant: string; apres: string }>;
 export type ResultatModif =
@@ -24,19 +22,6 @@ export type ResultatModif =
     }
   | { candidats: Candidat[] };
 
-async function trouverId(deps: Deps, reference: string): Promise<string> {
-  const html = await (await deps.api("/timeSheetTacheParJour/activity")).text();
-  const t = TABLES.flatMap((id) => lireTableauActivite(html, id)).find(
-    (x) => normaliser(x.reference) === normaliser(reference),
-  );
-  if (!t?.id) {
-    throw new Error(
-      `Tâche ${reference} introuvable parmi les tâches actives, à venir ou en rattrapage`,
-    );
-  }
-  return t.id;
-}
-
 // Champs du formulaire d'édition tels que le navigateur les enverrait.
 const lireChamps = (html: string) => new Map(serialiser(cheerio.load(html), "[name=libelle]"));
 
@@ -49,7 +34,7 @@ const AVERTISSEMENT_EXTERNE =
   "ils sont envoyés vides (effacés s'ils existaient). Les repréciser pour les conserver.";
 
 export async function modifierTache(input: ModifierTacheInput, deps: Deps): Promise<ResultatModif> {
-  const id = await trouverId(deps, input.reference);
+  const { id } = await trouverTache(deps, input.reference);
   const chemin = `/taches/useform/${id}`;
   const html = await (await deps.api(chemin)).text();
   const avant = lireChamps(html);

@@ -13,6 +13,11 @@ import {
   modifierTacheShape,
 } from "./tools/modifierTache.js";
 import {
+  supprimerTacheDescription,
+  supprimerTacheHandler,
+  supprimerTacheShape,
+} from "./tools/supprimerTache.js";
+import {
   saisirTimesheetDescription,
   saisirTimesheetHandler,
   saisirTimesheetShape,
@@ -41,6 +46,12 @@ server.registerTool(
   "modifier_tache",
   { description: modifierTacheDescription, inputSchema: modifierTacheShape },
   modifierTacheHandler({ api, log: logAction }),
+);
+
+server.registerTool(
+  "supprimer_tache",
+  { description: supprimerTacheDescription, inputSchema: supprimerTacheShape },
+  supprimerTacheHandler({ api, log: logAction }),
 );
 
 server.registerTool(
