@@ -65,10 +65,11 @@ Comme les actions sont actives dès la v1, on se protège des erreurs :
 
 ### Catalogue d'outils (à compléter)
 
-| Outil              | Type     | Endpoint                                             | Entrées                                                        | Sortie                                      |
-| ------------------ | -------- | ---------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------- |
-| `tester_connexion` | lecture  | `GET {chemin}`                                       | `chemin`                                                       | statut + titre                              |
-| `creer_tache`      | écriture | `GET /taches/useform` puis `POST /taches/createuser` | voir `docs/superpowers/specs/2026-10-19-creer-tache-design.md` | `dry_run` par défaut : payload ou candidats |
+| Outil              | Type     | Endpoint                                                                                                          | Entrées                                                        | Sortie                                      |
+| ------------------ | -------- | ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------- |
+| `tester_connexion` | lecture  | `GET {chemin}`                                                                                                    | `chemin`                                                       | statut + titre                              |
+| `creer_tache`      | écriture | `GET /taches/useform` puis `POST /taches/createuser`                                                              | voir `docs/superpowers/specs/2026-10-19-creer-tache-design.md` | `dry_run` par défaut : payload ou candidats |
+| `lister_taches`    | lecture  | `GET /timeSheetTacheParJour/activity` (actives, à venir) ou `GET .../tachesTermineesHistorique` (JSON DataTables) | `categorie`, `recherche`, `limite`, `debut`                    | total + liste allégée                       |
 
 ## Si le site ne renvoie que du HTML
 
