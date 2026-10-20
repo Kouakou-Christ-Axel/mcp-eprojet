@@ -146,8 +146,8 @@ test("réponse HTML à la place du JSON : erreur lisible", async () => {
   );
 });
 
-test("formulaire sans personneId (page inattendue) : erreur explicite", async () => {
+test("formulaire sans responsable interne (page inattendue) : erreur explicite", async () => {
   const { deps } = fake();
   deps.api = async () => new Response("<html><body>Accès refusé</body></html>");
-  await assert.rejects(creerTache(creerTacheSchema.parse(base), deps), /personneId|formulaire/i);
+  await assert.rejects(creerTache(creerTacheSchema.parse(base), deps), /responsable interne/i);
 });

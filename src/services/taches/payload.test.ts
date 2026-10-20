@@ -30,8 +30,6 @@ test("payload complet pour une tâche", () => {
   assert.equal(o.dateFinPrev, "06/03/2026");
   assert.equal(o.nbHeurePrev, "3");
   assert.equal(o.nbJourPrev, "0.5");
-  assert.equal(o.userId, "11");
-  assert.equal(o.personneId, "22");
   assert.equal(o.responsableInterneId, "22");
   assert.equal(o.responsableExterneId, "7");
 });

@@ -40,8 +40,11 @@ async function resoudreExterne(deps: Deps, projetId: string, nom: string): Promi
 
 export async function creerTache(input: CreerTacheInput, deps: Deps): Promise<Resultat> {
   const form = lireFormulaire(await (await deps.api("/taches/useform")).text());
-  if (!form.caches.personneId) {
-    throw new Error("Formulaire E-Projet inattendu (personneId absent) : page ou session invalide");
+  // Le responsable interne est la seule option du select : l'utilisateur connecté (userId/personneId n'ont pas de name, le navigateur ne les envoie pas).
+  if (!form.options.responsableInterneId?.[0]) {
+    throw new Error(
+      "Formulaire E-Projet inattendu (responsable interne introuvable) : page ou session invalide",
+    );
   }
   const projetId = resoudreOption(form.options, "projetId", input.projet);
   let saisie = input;

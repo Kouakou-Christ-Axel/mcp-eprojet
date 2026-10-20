@@ -30,7 +30,7 @@ export function construirePayload(
     typeTacheId: resoudreOption(form.options, "typeTacheId", input.type_tache),
     statutTacheId: resoudreOption(form.options, "statutTacheId", input.statut),
     tacheInterne: String(input.tache_interne),
-    responsableInterneId: form.caches.personneId ?? "",
+    responsableInterneId: form.options.responsableInterneId?.[0]?.valeur ?? "",
     responsableExterneId: externeId ?? "",
     dateDebutPrev: isoVersFr(input.debut_prev),
     dateFinPrev: isoVersFr(input.fin_prev),

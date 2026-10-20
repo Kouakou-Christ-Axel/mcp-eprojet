@@ -5,8 +5,8 @@ import { lireFormulaire, resoudreOption } from "./parse.js";
 
 const form = lireFormulaire(readFileSync("src/utils/__fixtures__/useform-min.html", "utf8"));
 
-test("lit les champs cachés", () => {
-  assert.deepEqual(form.caches, { userId: "11", personneId: "22" });
+test("ignore les champs cachés sans name (le navigateur ne les envoie pas)", () => {
+  assert.deepEqual(form.caches, {});
 });
 
 test("résout un libellé en valeur, sans casse ni accents", () => {

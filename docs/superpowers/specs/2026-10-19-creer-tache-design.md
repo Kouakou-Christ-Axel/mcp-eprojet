@@ -25,7 +25,7 @@ Saisir une tâche dans E-Projet est une corvée. L'outil `creer_tache` remplit �
 ## Contraintes
 
 - Formulaire : POST `application/x-www-form-urlencoded` vers `/EProjet-1/taches/createuser`.
-- Toujours un GET de `/taches/useform` avant le POST : reprendre les champs cachés `userId` et `personneId` (le responsable interne = `personneId`, l'utilisateur lui-même).
+- Toujours un GET de `/taches/useform` avant le POST (listes de valeurs). Correction du 2026-10-20 : `userId` et `personneId` n'ont **pas de `name`**, le navigateur ne les envoie pas ; le responsable interne est l'unique option du select `responsableInterneId` (l'utilisateur connecté).
 - Session, relogin et client HTTP : `src/client/` existant (`api()`). Parsing HTML : cheerio, isolé dans `src/utils/parse.ts`.
 - Fichiers de 200 lignes maximum, SOLID (voir `CLAUDE.md`).
 
@@ -89,3 +89,7 @@ Saisir une tâche dans E-Projet est une corvée. L'outil `creer_tache` remplit �
 - Le schéma zod de `gravite` doit rester facile à changer (obligation non confirmée).
 - Arrondi des jours : implémenté dans une fonction isolée et testée, facile à changer.
 - Points bloqués par l'absence de projet (résolution du nom de projet, noms exacts des champs du POST, réponse succès/erreur, `tacheParentId`/`jalonId` vides) : jalons de vérification dans le plan, pas des suppositions figées.
+
+## Correction du 2026-10-20
+
+Un dry_run sur le vrai formulaire a montré que les champs cachés `userId`/`personneId` n'ont pas de `name` (donc jamais envoyés). Le code lit le responsable interne dans le select `responsableInterneId`. Le garde-fou (erreur claire si ce select est vide) a évité tout envoi erroné. Le POST réel de `creer_tache` reste à vérifier.
