@@ -77,3 +77,12 @@ Heures, statut et pourcentage sont **obligatoires** pour chaque tâche citée.
 - **Échec partiel (deux POST)** : Actives puis À venir ; au premier échec, arrêt, pas de retry ni de retour arrière ; la réponse et `actions.log` disent quels formulaires ont été enregistrés (choix du concepteur).
 - **Doublons et inconnues** : référence citée deux fois, ou présente dans les deux tableaux : refus. Référence absente des deux tableaux : refus (une tâche terminée ou en rattrapage n'est pas modifiable ici, hors périmètre).
 - **Plan en deux phases** : tout ce qui est testable hors écriture réelle d'abord ; puis un point de contrôle avec une écriture réelle autorisée par l'utilisateur. Si le serveur refuse le formulaire complet, repli : n'envoyer que les lignes citées (choix du concepteur, à valider alors).
+
+## Résultat de l'essai réel (2026-10-20)
+
+Un envoi réel (0,25 h, En cours, 10 % sur PRJ-576-0417, jour du 20/10/2026) a été accepté :
+
+- `POST` du tableau Actives complet : HTTP 302 (redirection), sans erreur.
+- Les lignes inchangées sont acceptées ; une case vide est envoyée vide (`""`).
+- La relecture du jour confirme heures, statut et pourcentage (`verifie: true`) ; `lister_taches` renvoie ensuite `hReelle: "0.25"` et `pourcentageAvanc: "10.00"` (le serveur renvoie le pourcentage avec deux décimales).
+- Non couvert par l'essai : formulaire À venir, erreur de validation renvoyée par le serveur, réécriture sur un jour passé.

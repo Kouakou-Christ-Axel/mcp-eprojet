@@ -142,7 +142,7 @@ export async function saisirTimesheet(
   });
   if (!input.confirmer) return { mode: "dry_run", date, modifications, avertissements: alertes };
 
-  // non vérifié : POST réel (réponse et acceptation des lignes inchangées à confirmer).
+  // Vérifié le 2026-10-20 par un envoi réel : POST tableau complet accepté, relecture conforme.
   const enregistres: string[] = [];
   for (const form of page.formulaires.filter((f) => cibles.some((c) => c.form === f))) {
     const lot = cibles.filter((c) => c.form === form);
