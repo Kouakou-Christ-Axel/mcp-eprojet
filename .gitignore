@@ -3,3 +3,4 @@ dist
 .env
 actions.log
 .superpowers
+*.tmp.mts
