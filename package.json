@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "tsx --test \"src/**/*.test.ts\"",
-    "build": "tsc --outDir dist --rootDir src --noEmit false",
+    "build": "tsc -p tsconfig.build.json",
     "dev": "tsx src/index.ts",
     "check": "tsc --noEmit",
     "lint": "eslint .",
