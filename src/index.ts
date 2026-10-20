@@ -7,6 +7,11 @@ import {
   listerTachesHandler,
   listerTachesShape,
 } from "./tools/listerTaches.js";
+import {
+  saisirTimesheetDescription,
+  saisirTimesheetHandler,
+  saisirTimesheetShape,
+} from "./tools/saisirTimesheet.js";
 import { ping, pingShape } from "./tools/ping.js";
 import { logAction } from "./utils/actionsLog.js";
 
@@ -31,6 +36,16 @@ server.registerTool(
   "lister_taches",
   { description: listerTachesDescription, inputSchema: listerTachesShape },
   listerTachesHandler({ api }),
+);
+
+server.registerTool(
+  "saisir_timesheet",
+  { description: saisirTimesheetDescription, inputSchema: saisirTimesheetShape },
+  saisirTimesheetHandler({
+    api,
+    log: logAction,
+    aujourdhui: () => new Date().toLocaleDateString("sv-SE"),
+  }),
 );
 
 await server.connect(new StdioServerTransport());
