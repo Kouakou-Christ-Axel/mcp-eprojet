@@ -10,7 +10,11 @@ export interface ListeTaches {
   taches: TacheResume[];
 }
 
-const TABLES = { actives: "tabActivityStarted", a_venir: "tabActivityAvenir" } as const;
+const TABLES = {
+  actives: "tabActivityStarted",
+  a_venir: "tabActivityAvenir",
+  rattrapage: "tabActivityTermineeRattrapage",
+} as const;
 
 interface LigneHistorique {
   reference?: string;
@@ -55,7 +59,7 @@ async function terminees(input: ListerTachesInput, deps: Pick<Deps, "api">): Pro
 }
 
 async function enCours(
-  categorie: "actives" | "a_venir",
+  categorie: Exclude<ListerTachesInput["categorie"], "terminees">,
   input: ListerTachesInput,
   deps: Pick<Deps, "api">,
 ): Promise<ListeTaches> {

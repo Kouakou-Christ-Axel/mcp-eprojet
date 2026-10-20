@@ -14,7 +14,7 @@ Saisir ses heures par tâche et par jour est une corvée quotidienne. `saisir_ti
 
 - Pas de total d'heures par jour à vérifier ou plafonner (confirmé par l'utilisateur).
 - Pas de modification des tâches (libellé, dates) ni de suppression.
-- Pas d'onglet "En rattrapage" (format inconnu).
+- Onglet "Terminées en rattrapage" ajouté le 2026-10-20 : même format que les deux autres tableaux (`tabActivityTermineeRattrapage`, formulaire `timeSheetTacheTermineeRattrapageUserByProjet`, même POST). Lecture vérifiée en réel ; écriture non essayée.
 
 ## Anti-objectifs
 

@@ -125,3 +125,45 @@
     </tbody>
   </table>
 </form>
+<form
+  id="timeSheetTacheTermineeRattrapageUserByProjet"
+  action="/EProjet-1/timeSheetTacheParJour/TimeSheetTacheActivitySaveUpdate"
+  method="POST"
+>
+  <select id="timeSheetTachePar_timeSheetJourId_tabActivityTermineeRattrapage">
+    <option value="/EProjet-1/timeSheetTacheParJour/activityByDay/399">Mardi 20-10-2026</option>
+  </select>
+  <table id="tabActivityTermineeRattrapage">
+    <tbody>
+      <tr class="ts-tache-rattrapage">
+        <td>
+          <input type="hidden" name="listTaches[0].reference" value="PRJ-576-0300" /><input
+            type="hidden"
+            name="listTaches[0].projetId"
+            value="576"
+          /><input type="hidden" name="listTaches[0].id" value="7700" />PRJ-576-0300
+        </td>
+        <td>Tâche PRJ-576-0300</td>
+        <td>
+          <select name="listTaches[0].statutTacheId">
+            <option value="-1">A Faire</option>
+            <option value="-3">En cours</option>
+            <option value="-4" selected="selected">Terminée</option>
+            <option value="-5">Annulée</option>
+          </select>
+        </td>
+        <td><input type="number" name="listTaches[0].pourcentageAvanc" value="100.00" /></td>
+        <td>
+          <input type="hidden" name="listTaches[0].timeSheetJourId" value="399" /><input
+            type="number"
+            name="listTaches[0].nbHeureTravaille"
+            value=""
+          />
+        </td>
+        <td><input type="text" name="listTaches[0].commentaire" value="" /></td>
+        <td class="ts-cell-hprev">2</td>
+        <td class="ts-cell-hreelle">2</td>
+      </tr>
+    </tbody>
+  </table>
+</form>

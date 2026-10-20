@@ -48,7 +48,7 @@ function trouverCible(page: PageTs, tache: TacheSaisie): Cible {
   if (trouves.length !== 1) {
     throw new Error(
       trouves.length === 0
-        ? `Tâche ${tache.reference} introuvable parmi les tâches actives ou à venir`
+        ? `Tâche ${tache.reference} introuvable parmi les tâches actives, à venir ou en rattrapage`
         : `Tâche ${tache.reference} présente dans plusieurs tableaux`,
     );
   }

@@ -107,3 +107,20 @@ test("limite hors bornes refusée ; terminees en HTML : erreur lisible", async (
     /réponse inattendue/i,
   );
 });
+
+test("rattrapage : lit le tableau des terminées encore modifiables", async () => {
+  const r = await listerTaches(parse({ categorie: "rattrapage" }), fake().deps);
+  assert.equal(r.total, 1);
+  assert.deepEqual(r.taches[0], {
+    id: "7700",
+    reference: "PRJ-576-0300",
+    libelle: "Tache rattrapable",
+    type: "Formation",
+    projet: "Actions interne Back end",
+    statut: "Terminée",
+    finPrev: "20/10/2026",
+    pourcentageAvanc: "100.00",
+    hPrev: "0.25",
+    hReelle: "0.25",
+  });
+});

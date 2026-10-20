@@ -25,7 +25,7 @@ export interface PageTs {
   seuil: number;
 }
 
-const TABLES = ["tabActivityStarted", "tabActivityAvenir"];
+const TABLES = ["tabActivityStarted", "tabActivityAvenir", "tabActivityTermineeRattrapage"];
 const nombre = (s: string | undefined) => parseFloat(s ?? "") || 0;
 // Les URLs de la page portent le contexte d'application ; api() ajoute déjà la base.
 const sansContexte = (url: string) => url.replace(/^.*?(?=\/timeSheetTacheParJour\/)/, "");

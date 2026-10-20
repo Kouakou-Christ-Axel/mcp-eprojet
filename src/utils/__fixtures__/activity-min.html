@@ -68,3 +68,33 @@
     <tbody></tbody>
   </table>
 </form>
+<form
+  id="timeSheetTacheTermineeRattrapageUserByProjet"
+  action="/EProjet-1/timeSheetTacheParJour/TimeSheetTacheActivitySaveUpdate"
+  method="POST"
+>
+  <table id="tabActivityTermineeRattrapage">
+    <tbody>
+      <tr>
+        <td>
+          <input name="listTaches[0].reference" value="PRJ-576-0300" />
+          <input name="listTaches[0].id" value="7700" />
+          <input name="listTaches[0].libelle" value="Tache rattrapable" />
+          <input name="listTaches[0].typeTacheLibelle" value="Formation" />
+          <input name="listTaches[0].projetLibelle" value="Actions interne Back end" />
+        </td>
+        <td>
+          <select name="listTaches[0].statutTacheId">
+            <option value="-3">En cours</option>
+            <option value="-4" selected="selected">Terminée</option>
+          </select>
+        </td>
+        <td></td>
+        <td>20/10/2026</td>
+        <td><input name="listTaches[0].pourcentageAvanc" value="100.00" /></td>
+        <td class="ts-cell-hprev">0.25</td>
+        <td class="ts-cell-hreelle">0.25</td>
+      </tr>
+    </tbody>
+  </table>
+</form>

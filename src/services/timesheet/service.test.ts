@@ -121,3 +121,21 @@ test("un journal en panne ne masque pas un envoi réussi", async () => {
   const r = await saisirTimesheet(parse({ taches: [t0], confirmer: true }), deps);
   assert.ok("mode" in r && r.mode === "envoyé");
 });
+
+test("tâche en rattrapage : modifiable, un POST du formulaire rattrapage", async () => {
+  const { deps, appels } = fake();
+  const r = await saisirTimesheet(
+    parse({
+      taches: [{ reference: "PRJ-576-0300", heures: 1, statut: "Terminée", pourcentage: 100 }],
+      confirmer: true,
+    }),
+    deps,
+  );
+  const [p] = posts(appels);
+  assert.equal(posts(appels).length, 1);
+  assert.equal(p!.body!.get("listTaches[0].nbHeureTravaille"), "1");
+  assert.equal(p!.body!.get("listTaches[0].statutTacheId"), "-4");
+  assert.ok(
+    "mode" in r && r.mode === "envoyé" && r.enregistres[0] === "tabActivityTermineeRattrapage",
+  );
+});

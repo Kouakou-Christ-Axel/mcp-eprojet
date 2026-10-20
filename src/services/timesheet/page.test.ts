@@ -16,12 +16,13 @@ test("seuil de dépassement lu dans le script de la page", () => {
   assert.equal(page.seuil, 50);
 });
 
-test("deux formulaires, lignes lues avec leurs heures et statuts", () => {
+test("trois formulaires, lignes lues avec leurs heures et statuts", () => {
   assert.deepEqual(
     page.formulaires.map((f) => [f.tableId, f.lignes.length]),
     [
       ["tabActivityStarted", 2],
       ["tabActivityAvenir", 1],
+      ["tabActivityTermineeRattrapage", 1],
     ],
   );
   const f = page.formulaires[0]!;
