@@ -93,3 +93,12 @@ Saisir une tâche dans E-Projet est une corvée. L'outil `creer_tache` remplit �
 ## Correction du 2026-10-20
 
 Un dry_run sur le vrai formulaire a montré que les champs cachés `userId`/`personneId` n'ont pas de `name` (donc jamais envoyés). Le code lit le responsable interne dans le select `responsableInterneId`. Le garde-fou (erreur claire si ce select est vide) a évité tout envoi erroné. Le POST réel de `creer_tache` reste à vérifier.
+
+## Résultat de l'essai réel (2026-10-20)
+
+Une création réelle (TACHE, Formation, En cours, 2 h, 20/10/2026, projet 576) a été acceptée :
+
+- `POST /taches/createuser` : HTTP 302 vers `/EProjet-1/timeSheetTacheParJour/activity`, sans erreur.
+- La tâche apparaît dans l'onglet Actives avec la référence générée par le serveur (`PRJ-576-0418`, id 7858) ; ordre et référence vides à l'envoi sont bien générés par le serveur. Tâche parent, jalon et superviseurs envoyés vides : acceptés.
+- Relecture implémentée : après l'envoi, la tâche la plus récente du même libellé est cherchée dans Actives/À venir ; la réponse contient `tache` (dont la référence) et `verifie`.
+- Non couvert : nature ANOMALIE (gravité, composant), responsable externe, statut qui place la tâche hors Actives/À venir (relecture alors à `verifie: false`).

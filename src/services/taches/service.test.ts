@@ -151,3 +151,35 @@ test("formulaire sans responsable interne (page inattendue) : erreur explicite",
   deps.api = async () => new Response("<html><body>Accès refusé</body></html>");
   await assert.rejects(creerTache(creerTacheSchema.parse(base), deps), /responsable interne/i);
 });
+
+const activite = readFileSync("src/utils/__fixtures__/activity-min.html", "utf8");
+
+function avecActivite() {
+  const f = fake();
+  const api = f.deps.api;
+  f.deps.api = async (p, i) =>
+    p === "/timeSheetTacheParJour/activity" ? new Response(activite) : api(p, i);
+  return f;
+}
+
+test("envoi : relit les tâches et renvoie la tâche créée (référence) avec verifie true", async () => {
+  const { deps } = avecActivite();
+  const r = await creerTache(
+    creerTacheSchema.parse({ ...base, libelle: "Revue de code", confirmer: true }),
+    deps,
+  );
+  assert.ok("mode" in r && r.mode === "envoyé");
+  assert.equal(r.verifie, true);
+  assert.equal(r.tache?.reference, "PRJ-576-0420");
+});
+
+test("envoi : tâche introuvable à la relecture -> verifie false, sans erreur", async () => {
+  const { deps } = avecActivite();
+  const r = await creerTache(
+    creerTacheSchema.parse({ ...base, libelle: "Inconnue", confirmer: true }),
+    deps,
+  );
+  assert.ok("mode" in r && r.mode === "envoyé");
+  assert.equal(r.verifie, false);
+  assert.equal(r.tache, undefined);
+});

@@ -1,6 +1,7 @@
 import type { api as apiReelle } from "../../client/http.js";
 import { journaliser } from "../../utils/actionsLog.js";
 import { lireFormulaire, normaliser, resoudreOption } from "../../utils/parse.js";
+import { lireTableauActivite, type TacheResume } from "./activite.js";
 import { chercherComposant, chercherExterne, type Candidat } from "./lookups.js";
 import { construirePayload } from "./payload.js";
 import type { CreerTacheInput } from "./schema.js";
@@ -18,7 +19,8 @@ export type Resultat =
       externe?: string;
       statut: number;
       location: string | null;
-      verifie: false; // non vérifié : aucune relecture de la tâche créée n'est encore possible
+      verifie: boolean; // true = la tâche a été retrouvée dans la page Activité après l'envoi
+      tache?: TacheResume;
     }
   | { candidats: Candidat[] };
 
@@ -36,6 +38,20 @@ async function resoudreExterne(deps: Deps, projetId: string, nom: string): Promi
   if (trouves.length === 0) throw new Error(`Aucun responsable externe "${nom}" dans ce projet`);
   const exacts = trouves.filter((c) => normaliser(c.nom) === normaliser(nom));
   return trouves.length > 1 && exacts.length === 1 ? exacts : trouves;
+}
+
+// Relecture : la tâche créée apparaît dans Actives ou À venir ; la plus récente (id max) du même libellé.
+// Une panne de relecture ne doit jamais masquer une création réussie.
+async function retrouver(deps: Deps, libelle: string): Promise<TacheResume | undefined> {
+  try {
+    const html = await (await deps.api("/timeSheetTacheParJour/activity")).text();
+    return ["tabActivityStarted", "tabActivityAvenir"]
+      .flatMap((t) => lireTableauActivite(html, t))
+      .filter((t) => normaliser(t.libelle) === normaliser(libelle))
+      .sort((a, b) => Number(b.id) - Number(a.id))[0];
+  } catch {
+    return undefined;
+  }
 }
 
 export async function creerTache(input: CreerTacheInput, deps: Deps): Promise<Resultat> {
@@ -62,7 +78,7 @@ export async function creerTache(input: CreerTacheInput, deps: Deps): Promise<Re
   const nomExterne = externe ? { externe: externe.nom } : {};
   if (!input.confirmer) return { mode: "dry_run", payload: brut, ...nomExterne };
 
-  // non vérifié : POST réel (réponse succès/erreur à confirmer avec un vrai projet).
+  // Vérifié le 2026-10-20 par un envoi réel : 302 vers la page Activité, tâche créée.
   const res = await deps.api("/taches/createuser", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -71,12 +87,14 @@ export async function creerTache(input: CreerTacheInput, deps: Deps): Promise<Re
   const location = res.headers.get("location");
   journaliser(deps.log, { outil: "creer_tache", statut: res.status, location, payload: brut });
   if (res.status >= 400) throw new Error(`E-Projet a refusé la tâche (HTTP ${res.status})`);
+  const tache = await retrouver(deps, input.libelle);
   return {
     mode: "envoyé",
     payload: brut,
     ...nomExterne,
     statut: res.status,
     location,
-    verifie: false,
+    verifie: tache !== undefined,
+    ...(tache && { tache }),
   };
 }

@@ -3,7 +3,7 @@ import { dureeVersJoursHeures } from "../../utils/duree.js";
 import { resoudreOption, type Formulaire } from "../../utils/parse.js";
 import type { CreerTacheInput } from "./schema.js";
 
-// non vérifié : POST réel — noms de champs repris du HTML de /taches/useform.
+// Noms de champs repris du HTML de /taches/useform ; POST réel vérifié le 2026-10-20.
 const VIDES = [
   "ordre",
   "reference",
