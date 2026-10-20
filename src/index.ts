@@ -18,6 +18,11 @@ import {
   supprimerTacheShape,
 } from "./tools/supprimerTache.js";
 import {
+  lireTimesheetDescription,
+  lireTimesheetHandler,
+  lireTimesheetShape,
+} from "./tools/lireTimesheet.js";
+import {
   saisirTimesheetDescription,
   saisirTimesheetHandler,
   saisirTimesheetShape,
@@ -60,14 +65,18 @@ server.registerTool(
   listerTachesHandler({ api }),
 );
 
+const aujourdhui = () => new Date().toLocaleDateString("sv-SE");
+
+server.registerTool(
+  "lire_timesheet",
+  { description: lireTimesheetDescription, inputSchema: lireTimesheetShape },
+  lireTimesheetHandler({ api, aujourdhui }),
+);
+
 server.registerTool(
   "saisir_timesheet",
   { description: saisirTimesheetDescription, inputSchema: saisirTimesheetShape },
-  saisirTimesheetHandler({
-    api,
-    log: logAction,
-    aujourdhui: () => new Date().toLocaleDateString("sv-SE"),
-  }),
+  saisirTimesheetHandler({ api, log: logAction, aujourdhui }),
 );
 
 await server.connect(new StdioServerTransport());
