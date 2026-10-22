@@ -23,14 +23,14 @@ export type ResultatProjets =
   { projets: Projet[] } | { projet: Projet; total: number; externes: Candidat[] };
 
 // Option "Client | Projet" du select projetId de /taches/useform.
-const versProjet = (o: Option): Projet => {
+export const versProjet = (o: Option): Projet => {
   const [client, ...reste] = o.libelle.split(" | ");
   return reste.length
     ? { id: o.valeur, client: client!, libelle: reste.join(" | ") }
     : { id: o.valeur, client: "", libelle: o.libelle };
 };
 
-function choisir(projets: Projet[], saisi: string): Projet {
+export function choisir(projets: Projet[], saisi: string): Projet {
   const n = normaliser(saisi);
   const exacts = projets.filter((p) =>
     [p.id, p.libelle, `${p.client} | ${p.libelle}`].some((v) => normaliser(v) === n),

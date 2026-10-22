@@ -8,7 +8,10 @@ export const GRAVITES = ["BLOQUANTE", "MAJEURE", "MINEURE", "COSMETIQUE"] as con
 const iso = z.string().describe("Date ISO AAAA-MM-JJ");
 
 const objet = z.object({
-  projet: z.string().min(1).describe("Nom du projet"),
+  projet: z
+    .string()
+    .min(1)
+    .describe("Projet : id, libellé ou « Client | Projet » (voir lister_projets)"),
   libelle: z.string().min(1).max(255),
   nature: z.enum(NATURES),
   gravite: z.enum(GRAVITES).optional().describe("Obligatoire si nature = ANOMALIE"),

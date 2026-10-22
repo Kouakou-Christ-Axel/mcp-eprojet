@@ -1,6 +1,7 @@
 import type { api as apiReelle } from "../../client/http.js";
 import { journaliser } from "../../utils/actionsLog.js";
-import { lireFormulaire, normaliser, resoudreOption } from "../../utils/parse.js";
+import { choisir, versProjet } from "./projets.js";
+import { lireFormulaire, normaliser } from "../../utils/parse.js";
 import { lireTableauActivite, type TacheResume } from "./activite.js";
 import { chercherComposant, chercherExterne, type Candidat } from "./lookups.js";
 import { construirePayload } from "./payload.js";
@@ -70,7 +71,7 @@ export async function creerTache(input: CreerTacheInput, deps: Deps): Promise<Re
       "Formulaire E-Projet inattendu (responsable interne introuvable) : page ou session invalide",
     );
   }
-  const projetId = resoudreOption(form.options, "projetId", input.projet);
+  const projetId = choisir((form.options.projetId ?? []).map(versProjet), input.projet).id;
   let saisie = input;
   if (input.nature === "ANOMALIE" && input.composant) {
     saisie = { ...input, composant: await resoudreComposant(deps, projetId, input.composant) };
