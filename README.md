@@ -170,4 +170,4 @@ Architecture détaillée et décisions : [`docs/ARCHITECTURE.md`](docs/ARCHITECT
 
 ## Licence
 
-À définir : aucun fichier `LICENSE` pour l'instant.
+[MIT](LICENSE)
