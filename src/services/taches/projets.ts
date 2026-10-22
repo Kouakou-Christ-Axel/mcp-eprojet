@@ -20,7 +20,8 @@ export interface Projet {
   libelle: string;
 }
 export type ResultatProjets =
-  { projets: Projet[] } | { projet: Projet; total: number; externes: Candidat[] };
+  | { projets: Projet[]; types_tache: string[]; statuts: string[] }
+  | { projet: Projet; total: number; externes: Candidat[] };
 
 // Option "Client | Projet" du select projetId de /taches/useform.
 export const versProjet = (o: Option): Projet => {
@@ -53,8 +54,12 @@ export async function listerProjets(
   deps: Pick<Deps, "api">,
 ): Promise<ResultatProjets> {
   const html = await (await deps.api("/taches/useform")).text();
-  const projets = (lireFormulaire(html).options["projetId"] ?? []).map(versProjet);
-  if (!input.projet) return { projets };
+  const { options } = lireFormulaire(html);
+  const projets = (options["projetId"] ?? []).map(versProjet);
+  if (!input.projet) {
+    const libelles = (champ: string) => (options[champ] ?? []).map((o) => o.libelle);
+    return { projets, types_tache: libelles("typeTacheId"), statuts: libelles("statutTacheId") };
+  }
   const projet = choisir(projets, input.projet);
   const tous = await chercherExterne(deps.api, projet.id, input.recherche ?? "");
   return { projet, total: tous.length, externes: tous.slice(0, input.limite) };

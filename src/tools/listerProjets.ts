@@ -9,7 +9,7 @@ import type { Deps } from "../services/taches/service.js";
 
 export const listerProjetsDescription =
   "Liste les projets auxquels l'utilisateur est associé dans E-Projet (lecture seule) : id, client, " +
-  "libellé. Avec projet (id, libellé ou « Client | Projet »), liste plutôt les responsables externes " +
+  "libellé, plus les types de tâche et statuts valides pour creer_tache. Avec projet (id, libellé ou « Client | Projet »), liste plutôt les responsables externes " +
   "de ce projet (ils dépendent du client), filtrables par recherche, 20 par défaut (max 100). " +
   "Utile avant creer_tache ou modifier_tache pour choisir un projet ou un responsable externe.";
 

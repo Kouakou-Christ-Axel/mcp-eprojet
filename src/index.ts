@@ -18,6 +18,11 @@ import {
   supprimerTacheShape,
 } from "./tools/supprimerTache.js";
 import {
+  creerTachesDescription,
+  creerTachesHandler,
+  creerTachesShape,
+} from "./tools/creerTaches.js";
+import {
   listerProjetsDescription,
   listerProjetsHandler,
   listerProjetsShape,
@@ -51,6 +56,12 @@ server.registerTool(
   "creer_tache",
   { description: creerTacheDescription, inputSchema: creerTacheShape },
   creerTacheHandler({ api, log: logAction }),
+);
+
+server.registerTool(
+  "creer_taches",
+  { description: creerTachesDescription, inputSchema: creerTachesShape },
+  creerTachesHandler({ api, log: logAction }),
 );
 
 server.registerTool(
