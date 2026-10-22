@@ -6,7 +6,7 @@ import type { Deps } from "../services/taches/service.js";
 export const listerTachesDescription =
   "Liste les tâches de l'utilisateur dans E-Projet (lecture seule). categorie : actives (défaut), " +
   "a_venir (planifiées) ou terminees (historique complet). recherche : mot-clé sur la référence, " +
-  "le libellé ou le projet. 20 résultats par défaut (max 100) ; utiliser debut pour la page suivante.";
+  "le libellé ou le projet. hPrev et hReelle sont en heures décimales (0.5 = 30 min). 20 résultats par défaut (max 100) ; utiliser debut pour la page suivante.";
 
 export { listerTachesShape };
 

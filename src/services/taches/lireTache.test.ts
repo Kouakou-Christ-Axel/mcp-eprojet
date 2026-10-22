@@ -32,7 +32,9 @@ test("détail : champs du formulaire d'édition + heures réelles, GET uniquemen
   assert.equal(t.statut, "Terminée");
   assert.equal(t.responsable_externe, "DUPONT Alice");
   assert.equal(t.composant, "Front");
-  assert.equal(t.heures_reelles, "0.5");
+  assert.equal(t.heures_reelles, 0.5);
+  assert.equal(typeof t.heures_prev, "number");
+  assert.equal(typeof t.jours_prev, "number");
   assert.deepEqual(appels.map((a) => a.path).slice(-1), ["/taches/useform/7811"]);
   assert.equal(
     appels.every((a) => !a.method || a.method === "GET"),

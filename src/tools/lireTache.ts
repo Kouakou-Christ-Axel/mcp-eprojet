@@ -4,8 +4,9 @@ import type { Deps } from "../services/taches/service.js";
 
 export const lireTacheDescription =
   "Lit le détail d'une tâche E-Projet (lecture seule), repérée par sa référence : libellé, projet, " +
-  "type, nature, gravité, statut, % d'avancement, dates et durée prévues, heures réelles, " +
-  "commentaire, responsable externe et composant (vides si non renseignés).";
+  "type, nature, gravité, statut, % d'avancement, dates et durée prévue, heures réelles, " +
+  "commentaire, responsable externe et composant (vides si non renseignés). Unités : heures_prev et heures_reelles en heures décimales " +
+  "(0.5 = 30 min), jours_prev en jours (1 jour = 8 h, 0.5 = demi-journée).";
 
 export { lireTacheShape };
 

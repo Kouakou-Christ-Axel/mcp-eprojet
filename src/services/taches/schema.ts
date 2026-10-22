@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { dureeVersJoursHeures } from "../../utils/duree.js";
+import { DUREE_AIDE, dureeVersJoursHeures } from "../../utils/duree.js";
 import { verifierPeriode } from "../../utils/dates.js";
 
 export const NATURES = ["TACHE", "ANOMALIE", "EVOLUTION"] as const;
@@ -19,7 +19,7 @@ const objet = z.object({
   responsable_externe: z.string().optional().describe("Nom (recherché dans le projet)"),
   debut_prev: iso,
   fin_prev: iso,
-  duree_heures: z.number().describe("Heures décimales (1.5 = 1 h 30), pas de 0.25, max 300"),
+  duree_heures: z.number().describe(DUREE_AIDE),
   commentaire: z.string().optional(),
   confirmer: z.boolean().default(false).describe("false = dry_run ; true = envoie vraiment"),
 });

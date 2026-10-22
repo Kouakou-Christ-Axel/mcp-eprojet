@@ -23,13 +23,15 @@ export interface DetailTache {
   tache_interne: boolean;
   debut_prev: string;
   fin_prev: string;
-  jours_prev: string;
-  heures_prev: string;
-  heures_reelles: string;
+  jours_prev: number; // en jours, 1 jour = 8 h (0.5 = demi-journée)
+  heures_prev: number; // en heures décimales (0.5 = 30 min)
+  heures_reelles: number; // en heures décimales
   commentaire: string;
   responsable_externe: string;
   composant: string;
 }
+
+const nombre = (s: string | undefined) => parseFloat(s ?? "") || 0;
 
 // Lecture seule : formulaire d'édition (détails) + page Activité (statut, heures réelles).
 export async function lireTache(
@@ -60,9 +62,9 @@ export async function lireTache(
     tache_interne: c.get("tacheInterne") === "true",
     debut_prev: c.get("dateDebutPrev") ?? "",
     fin_prev: c.get("dateFinPrev") ?? "",
-    jours_prev: c.get("nbJourPrev") ?? "",
-    heures_prev: c.get("nbHeurePrev") ?? "",
-    heures_reelles: resume.hReelle,
+    jours_prev: nombre(c.get("nbJourPrev")),
+    heures_prev: nombre(c.get("nbHeurePrev")),
+    heures_reelles: nombre(resume.hReelle),
     commentaire: c.get("commentaire") ?? "",
     responsable_externe: serveur.responsableExterneNom ?? "",
     composant: serveur.composant ?? "",

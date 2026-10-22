@@ -7,7 +7,8 @@ import type { Deps } from "../services/taches/service.js";
 export const modifierTacheDescription =
   "Modifie une tâche existante d'E-Projet (actives, à venir ou en rattrapage), repérée par sa " +
   "référence. Seuls les champs cités changent. Par défaut dry_run : montre les changements " +
-  "avant/après sans rien envoyer ; confirmer=true pour modifier vraiment. Le statut d'une tâche à " +
+  "avant/après sans rien envoyer ; confirmer=true pour modifier vraiment. duree_heures : heures décimales (0.5 = 30 min, 8 = 1 jour) ; dans les changements, nbHeurePrev est en " +
+  "heures et nbJourPrev en jours (1 jour = 8 h). Le statut d'une tâche à " +
   "100 % ne se change pas ici (utiliser saisir_timesheet). Le responsable externe et le composant " +
   "actuels sont conservés sauf si on les change.";
 
