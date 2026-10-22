@@ -1,6 +1,6 @@
 import * as cheerio from "cheerio";
 import { frVersIso, isoVersFr, verifierPeriode } from "../../utils/dates.js";
-import { dureeVersJoursHeures } from "../../utils/duree.js";
+import { dureeVersJoursHeures, verifierJours } from "../../utils/duree.js";
 import { journaliser } from "../../utils/actionsLog.js";
 import { lireFormulaire, normaliser, resoudreOption, serialiser } from "../../utils/parse.js";
 import { lireDetailServeur } from "./detail.js";
@@ -82,9 +82,12 @@ export async function modifierTache(input: ModifierTacheInput, deps: Deps): Prom
     set("dateFinPrev", isoVersFr(fin));
   }
   if (input.duree_heures !== undefined) {
-    const { nbHeurePrev, nbJourPrev } = dureeVersJoursHeures(input.duree_heures);
+    const { nbHeurePrev, nbJourPrev } = dureeVersJoursHeures(input.duree_heures, input.jours_prev);
     set("nbHeurePrev", String(nbHeurePrev));
     set("nbJourPrev", String(nbJourPrev));
+  } else if (input.jours_prev !== undefined) {
+    verifierJours(input.jours_prev);
+    set("nbJourPrev", String(input.jours_prev));
   }
 
   const changements: Changements = {};

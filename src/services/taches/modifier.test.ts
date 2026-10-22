@@ -131,3 +131,14 @@ test("responsable externe et composant actuels relus et renvoyés (jamais effac�
     Object.assign(detail, { responsableExterneId: null, composant: null });
   }
 });
+
+test("jours_prev seul : seul nbJourPrev change ; avec duree_heures : valeurs indépendantes", async () => {
+  const { deps } = fake();
+  const seul = await modifierTache(parse({ jours_prev: 1 }), deps);
+  assert.ok("mode" in seul);
+  assert.deepEqual(Object.keys(seul.changements), ["nbJourPrev"]);
+  const deux = await modifierTache(parse({ duree_heures: 0.75, jours_prev: 1 }), deps);
+  assert.ok("mode" in deux);
+  assert.equal(deux.changements.nbJourPrev?.apres, "1");
+  assert.equal(deux.changements.nbHeurePrev?.apres, "0.75");
+});

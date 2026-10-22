@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { DUREE_AIDE, dureeVersJoursHeures } from "../../utils/duree.js";
+import { DUREE_AIDE, JOURS_AIDE, dureeVersJoursHeures } from "../../utils/duree.js";
 import { verifierPeriode } from "../../utils/dates.js";
 
 export const NATURES = ["TACHE", "ANOMALIE", "EVOLUTION"] as const;
@@ -23,6 +23,7 @@ const objet = z.object({
   debut_prev: iso,
   fin_prev: iso,
   duree_heures: z.number().describe(DUREE_AIDE),
+  jours_prev: z.number().optional().describe(JOURS_AIDE),
   commentaire: z.string().optional(),
   confirmer: z.boolean().default(false).describe("false = dry_run ; true = envoie vraiment"),
 });
@@ -34,7 +35,7 @@ export const creerTacheSchema = objet.superRefine((v, ctx) => {
   if (v.nature === "ANOMALIE" && !v.gravite) erreur("La gravité est obligatoire pour une anomalie");
   try {
     verifierPeriode(v.debut_prev, v.fin_prev);
-    dureeVersJoursHeures(v.duree_heures);
+    dureeVersJoursHeures(v.duree_heures, v.jours_prev);
   } catch (e) {
     erreur((e as Error).message);
   }

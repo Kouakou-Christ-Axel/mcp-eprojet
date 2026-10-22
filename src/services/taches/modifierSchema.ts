@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { DUREE_AIDE } from "../../utils/duree.js";
+import { DUREE_AIDE, JOURS_AIDE } from "../../utils/duree.js";
 import { GRAVITES, NATURES } from "./schema.js";
 
 const iso = z.string().describe("Date ISO AAAA-MM-JJ");
@@ -17,6 +17,7 @@ const objet = z.object({
   debut_prev: iso.optional(),
   fin_prev: iso.optional(),
   duree_heures: z.number().optional().describe(DUREE_AIDE),
+  jours_prev: z.number().optional().describe(JOURS_AIDE),
   commentaire: z.string().optional(),
   confirmer: z.boolean().default(false).describe("false = dry_run ; true = envoie vraiment"),
 });

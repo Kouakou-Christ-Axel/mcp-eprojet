@@ -20,7 +20,7 @@ export function construirePayload(
   externeId: string | undefined,
   projetId: string,
 ): URLSearchParams {
-  const { nbHeurePrev, nbJourPrev } = dureeVersJoursHeures(input.duree_heures);
+  const { nbHeurePrev, nbJourPrev } = dureeVersJoursHeures(input.duree_heures, input.jours_prev);
   const anomalie = input.nature === "ANOMALIE";
   const champs: Record<string, string> = {
     ...form.caches,

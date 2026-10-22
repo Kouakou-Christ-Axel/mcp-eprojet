@@ -15,3 +15,11 @@ test("refuse une durée hors règle", () => {
     assert.throws(() => dureeVersJoursHeures(h), /durée/i, `h=${h}`);
   }
 });
+
+test("Jour prév indépendant : valeur donnée prioritaire, validée par pas de 0,25", () => {
+  assert.deepEqual(dureeVersJoursHeures(0.75, 1), { nbHeurePrev: 0.75, nbJourPrev: 1 });
+  assert.deepEqual(dureeVersJoursHeures(8, 0.5), { nbHeurePrev: 8, nbJourPrev: 0.5 });
+  for (const j of [0, 0.1, 0.3, 301]) {
+    assert.throws(() => dureeVersJoursHeures(2, j), /Jour prév/, `j=${j}`);
+  }
+});
