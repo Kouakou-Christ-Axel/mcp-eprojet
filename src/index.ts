@@ -23,6 +23,11 @@ import {
   creerTachesShape,
 } from "./tools/creerTaches.js";
 import {
+  modifierTachesDescription,
+  modifierTachesHandler,
+  modifierTachesShape,
+} from "./tools/modifierTaches.js";
+import {
   listerProjetsDescription,
   listerProjetsHandler,
   listerProjetsShape,
@@ -68,6 +73,12 @@ server.registerTool(
   "modifier_tache",
   { description: modifierTacheDescription, inputSchema: modifierTacheShape },
   modifierTacheHandler({ api, log: logAction }),
+);
+
+server.registerTool(
+  "modifier_taches",
+  { description: modifierTachesDescription, inputSchema: modifierTachesShape },
+  modifierTachesHandler({ api, log: logAction }),
 );
 
 server.registerTool(

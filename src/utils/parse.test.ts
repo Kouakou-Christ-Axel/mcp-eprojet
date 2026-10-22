@@ -21,3 +21,17 @@ test("libellé inconnu : erreur listant les valeurs permises", () => {
     /A Faire.*En cours.*Prêt pour QA/s,
   );
 });
+
+test("resoudreOption : fragment unique accepté, ambigu ou inconnu refusé", () => {
+  const options = {
+    t: [
+      { valeur: "1", libelle: "Support Développement" },
+      { valeur: "2", libelle: "Support Client" },
+      { valeur: "3", libelle: "Test" },
+    ],
+  };
+  assert.equal(resoudreOption(options, "t", "support dev"), "1");
+  assert.equal(resoudreOption(options, "t", "TEST"), "3");
+  assert.throws(() => resoudreOption(options, "t", "support"), /Valeurs permises/);
+  assert.throws(() => resoudreOption(options, "t", ""), /Valeurs permises/);
+});

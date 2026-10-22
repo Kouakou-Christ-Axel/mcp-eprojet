@@ -66,8 +66,12 @@ export function resoudreOption(
   libelle: string,
 ): string {
   const liste = options[champ] ?? [];
-  const trouve = liste.find((o) => normaliser(o.libelle) === normaliser(libelle));
+  const n = normaliser(libelle);
+  const trouve = liste.find((o) => normaliser(o.libelle) === n);
   if (trouve) return trouve.valeur;
+  // Tolérance : un fragment qui ne désigne qu'une seule option ("support dev").
+  const proches = n ? liste.filter((o) => normaliser(o.libelle).includes(n)) : [];
+  if (proches.length === 1) return proches[0]!.valeur;
   throw new Error(
     `"${libelle}" inconnu pour ${champ}. Valeurs permises : ${liste.map((o) => o.libelle).join(", ") || "aucune (liste vide)"}`,
   );
