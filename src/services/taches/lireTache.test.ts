@@ -9,6 +9,16 @@ const appels: { path: string; method?: string | undefined }[] = [];
 const deps = {
   api: async (path: string, init?: RequestInit) => {
     appels.push({ path, method: init?.method });
+    if (/^[/]taches[/][0-9]+$/.test(path)) {
+      return new Response(
+        JSON.stringify({
+          statutTacheLibelle: "Terminée",
+          responsableExterneNom: "DUPONT Alice",
+          composant: "Front",
+        }),
+        { headers: { "content-type": "application/json" } },
+      );
+    }
     return new Response(path.startsWith("/taches/useform/") ? edition : activite);
   },
 };
@@ -19,6 +29,9 @@ test("détail : champs du formulaire d'édition + heures réelles, GET uniquemen
   assert.equal(t.libelle.length > 0, true);
   assert.match(t.debut_prev, /^\d{2}\/\d{2}\/\d{4}$/);
   assert.equal(typeof t.pourcentage, "number");
+  assert.equal(t.statut, "Terminée");
+  assert.equal(t.responsable_externe, "DUPONT Alice");
+  assert.equal(t.composant, "Front");
   assert.equal(t.heures_reelles, "0.5");
   assert.deepEqual(appels.map((a) => a.path).slice(-1), ["/taches/useform/7811"]);
   assert.equal(

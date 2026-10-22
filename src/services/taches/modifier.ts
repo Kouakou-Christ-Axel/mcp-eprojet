@@ -3,6 +3,7 @@ import { frVersIso, isoVersFr, verifierPeriode } from "../../utils/dates.js";
 import { dureeVersJoursHeures } from "../../utils/duree.js";
 import { journaliser } from "../../utils/actionsLog.js";
 import { lireFormulaire, normaliser, resoudreOption, serialiser } from "../../utils/parse.js";
+import { lireDetailServeur } from "./detail.js";
 import type { Candidat } from "./lookups.js";
 import { trouverTache } from "./recherche.js";
 import type { ModifierTacheInput } from "./modifierSchema.js";
@@ -10,34 +11,36 @@ import { resoudreComposant, resoudreExterne, type Deps } from "./service.js";
 
 export type Changements = Record<string, { avant: string; apres: string }>;
 export type ResultatModif =
-  | { mode: "dry_run"; reference: string; changements: Changements; avertissements: string[] }
+  | { mode: "dry_run"; reference: string; changements: Changements }
   | {
       mode: "envoyé";
       reference: string;
       changements: Changements;
-      avertissements: string[];
       statut: number;
       verifie: boolean;
       ecarts: string[];
     }
   | { candidats: Candidat[] };
 
-// Champs du formulaire d'édition tels que le navigateur les enverrait.
-const lireChamps = (html: string) => new Map(serialiser(cheerio.load(html), "[name=libelle]"));
+// Champs du formulaire d'édition tels que le navigateur les enverrait, complétés par le responsable
+// externe et le composant actuels (le formulaire ne les recharge pas : sans cela ils seraient effacés).
+async function lireEtat(deps: Deps, id: string) {
+  const html = await (await deps.api(`/taches/useform/${id}`)).text();
+  const champs = new Map(serialiser(cheerio.load(html), "[name=libelle]"));
+  const { responsableExterneId, composant } = await lireDetailServeur(deps, id);
+  if (responsableExterneId !== null)
+    champs.set("responsableExterneId", String(responsableExterneId));
+  if (composant) champs.set("composant", composant);
+  return { html, champs };
+}
 
 // Mêmes nombres écrits différemment ("2.0" / "2") : pas un écart.
 const egal = (a: string | undefined, b: string) =>
   a === b || (a !== undefined && a !== "" && b !== "" && Number(a) === Number(b));
 
-const AVERTISSEMENT_EXTERNE =
-  "E-Projet ne recharge pas le responsable externe ni le composant à l'édition : non précisés ici, " +
-  "ils sont envoyés vides (effacés s'ils existaient). Les repréciser pour les conserver.";
-
 export async function modifierTache(input: ModifierTacheInput, deps: Deps): Promise<ResultatModif> {
   const { id } = await trouverTache(deps, input.reference);
-  const chemin = `/taches/useform/${id}`;
-  const html = await (await deps.api(chemin)).text();
-  const avant = lireChamps(html);
+  const { html, champs: avant } = await lireEtat(deps, id);
   if (
     avant.get("id") !== id ||
     normaliser(avant.get("reference") ?? "") !== normaliser(input.reference)
@@ -89,12 +92,7 @@ export async function modifierTache(input: ModifierTacheInput, deps: Deps): Prom
     if (!egal(avant.get(k), v)) changements[k] = { avant: avant.get(k) ?? "", apres: v };
   }
   if (Object.keys(changements).length === 0) throw new Error("Rien à modifier : déjà à jour");
-  const anomalie = apres.get("natureTache") === "ANOMALIE";
-  const complet = input.responsable_externe && (!anomalie || input.composant);
-  const avertissements = complet ? [] : [AVERTISSEMENT_EXTERNE];
-  if (!input.confirmer) {
-    return { mode: "dry_run", reference: input.reference, changements, avertissements };
-  }
+  if (!input.confirmer) return { mode: "dry_run", reference: input.reference, changements };
 
   const res = await deps.api("/taches/updateuser", {
     method: "POST",
@@ -108,7 +106,7 @@ export async function modifierTache(input: ModifierTacheInput, deps: Deps): Prom
     changements,
   });
   if (res.status >= 400) throw new Error(`E-Projet a refusé la modification (HTTP ${res.status})`);
-  const relu = lireChamps(await (await deps.api(chemin)).text());
+  const { champs: relu } = await lireEtat(deps, id);
   const ecarts = Object.entries(changements)
     .filter(([k, c]) => !egal(relu.get(k), c.apres))
     .map(([k, c]) => `${k} : relu "${relu.get(k) ?? ""}" au lieu de "${c.apres}"`);
@@ -116,7 +114,6 @@ export async function modifierTache(input: ModifierTacheInput, deps: Deps): Prom
     mode: "envoyé",
     reference: input.reference,
     changements,
-    avertissements,
     statut: res.status,
     verifie: ecarts.length === 0,
     ecarts,

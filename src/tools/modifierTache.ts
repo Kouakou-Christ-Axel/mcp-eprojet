@@ -8,8 +8,8 @@ export const modifierTacheDescription =
   "Modifie une tâche existante d'E-Projet (actives, à venir ou en rattrapage), repérée par sa " +
   "référence. Seuls les champs cités changent. Par défaut dry_run : montre les changements " +
   "avant/après sans rien envoyer ; confirmer=true pour modifier vraiment. Le statut d'une tâche à " +
-  "100 % ne se change pas ici (utiliser saisir_timesheet). Attention : E-Projet ne recharge pas " +
-  "le responsable externe ni le composant à l'édition ; les repréciser sinon ils sont effacés.";
+  "100 % ne se change pas ici (utiliser saisir_timesheet). Le responsable externe et le composant " +
+  "actuels sont conservés sauf si on les change.";
 
 export { modifierTacheShape };
 

@@ -1,6 +1,7 @@
 import * as cheerio from "cheerio";
 import { z } from "zod";
 import { lireFormulaire, normaliser, serialiser } from "../../utils/parse.js";
+import { lireDetailServeur } from "./detail.js";
 import { trouverTache } from "./recherche.js";
 import type { Deps } from "./service.js";
 
@@ -26,7 +27,8 @@ export interface DetailTache {
   heures_prev: string;
   heures_reelles: string;
   commentaire: string;
-  non_lisible: string;
+  responsable_externe: string;
+  composant: string;
 }
 
 // Lecture seule : formulaire d'édition (détails) + page Activité (statut, heures réelles).
@@ -35,6 +37,7 @@ export async function lireTache(
   deps: Pick<Deps, "api">,
 ): Promise<DetailTache> {
   const resume = await trouverTache(deps, input.reference);
+  const serveur = await lireDetailServeur(deps, resume.id);
   const html = await (await deps.api(`/taches/useform/${resume.id}`)).text();
   const c = new Map(serialiser(cheerio.load(html), "[name=libelle]"));
   if (normaliser(c.get("reference") ?? "") !== normaliser(input.reference)) {
@@ -50,9 +53,9 @@ export async function lireTache(
     projet: resume.projet,
     type: libelleDe("typeTacheId") || resume.type,
     nature: c.get("natureTache") ?? "",
-    gravite: c.get("gravite") ?? "",
-    // Le formulaire d'édition n'a pas "Terminée" : on se fie à la page Activité, puis au 100 %.
-    statut: resume.statut || (pourcentage >= 100 ? "Terminée" : libelleDe("statutTacheId")),
+    gravite: serveur.gravite ?? c.get("gravite") ?? "",
+    // Le formulaire d'édition n'a pas "Terminée" : le statut vient du JSON de la tâche.
+    statut: serveur.statutTacheLibelle ?? resume.statut ?? "",
     pourcentage,
     tache_interne: c.get("tacheInterne") === "true",
     debut_prev: c.get("dateDebutPrev") ?? "",
@@ -61,6 +64,7 @@ export async function lireTache(
     heures_prev: c.get("nbHeurePrev") ?? "",
     heures_reelles: resume.hReelle,
     commentaire: c.get("commentaire") ?? "",
-    non_lisible: "Responsable externe et composant : E-Projet ne les expose pas.",
+    responsable_externe: serveur.responsableExterneNom ?? "",
+    composant: serveur.composant ?? "",
   };
 }

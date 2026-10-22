@@ -4,8 +4,8 @@ import type { Deps } from "../services/taches/service.js";
 
 export const lireTacheDescription =
   "Lit le détail d'une tâche E-Projet (lecture seule), repérée par sa référence : libellé, projet, " +
-  "type, nature, gravité, statut, % d'avancement, dates et durée prévues, heures réelles, commentaire. " +
-  "Le responsable externe et le composant ne sont pas lisibles (E-Projet ne les expose pas).";
+  "type, nature, gravité, statut, % d'avancement, dates et durée prévues, heures réelles, " +
+  "commentaire, responsable externe et composant (vides si non renseignés).";
 
 export { lireTacheShape };
 

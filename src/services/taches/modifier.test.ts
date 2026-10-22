@@ -8,6 +8,8 @@ import type { Deps } from "./service.js";
 const activite = readFileSync("src/utils/__fixtures__/activity-min.html", "utf8");
 const edition = readFileSync("src/utils/__fixtures__/edit-min.html", "utf8");
 
+const detail = { responsableExterneId: null, composant: null } as Record<string, unknown>;
+
 function fake(apresPost: (h: string) => string = (h) => h) {
   const appels: { path: string; method: string; body?: URLSearchParams | undefined }[] = [];
   const journal: object[] = [];
@@ -19,6 +21,11 @@ function fake(apresPost: (h: string) => string = (h) => h) {
       if (method === "POST") {
         posts++;
         return new Response("", { status: 302 });
+      }
+      if (/^[/]taches[/][0-9]+$/.test(path)) {
+        return new Response(JSON.stringify(detail), {
+          headers: { "content-type": "application/json" },
+        });
       }
       if (path.startsWith("/taches/useform/")) {
         return new Response(posts > 0 ? apresPost(edition) : edition);
@@ -37,7 +44,7 @@ test("le schéma exige au moins un champ à modifier", () => {
   assert.doesNotThrow(() => modifierTacheSchema.parse({ reference: "PRJ-1", libelle: "x" }));
 });
 
-test("dry_run : changements avant/après, aucun POST, avertissement externe", async () => {
+test("dry_run : changements avant/après, aucun POST", async () => {
   const { deps, appels, journal } = fake();
   const r = await modifierTache(parse({ libelle: "Nouveau", commentaire: "ok" }), deps);
   assert.ok("mode" in r && r.mode === "dry_run");
@@ -45,7 +52,6 @@ test("dry_run : changements avant/après, aucun POST, avertissement externe", as
     libelle: { avant: "Creation d une tache de test", apres: "Nouveau" },
     commentaire: { avant: "ancien", apres: "ok" },
   });
-  assert.match(r.avertissements.join(" "), /externe/);
   assert.equal(posts(appels).length, 0);
   assert.equal(journal.length, 0);
   assert.ok(appels.some((a) => a.path === "/taches/useform/7811"));
@@ -110,4 +116,18 @@ test("libellés résolus ; statut inconnu ou tâche à 100 % refusés ; rien à 
       : res;
   };
   await assert.rejects(modifierTache(parse({ statut: "En cours" }), centPourcent.deps), /100 %/);
+});
+
+test("responsable externe et composant actuels relus et renvoyés (jamais effacés)", async () => {
+  Object.assign(detail, { responsableExterneId: 12, composant: "Front" });
+  try {
+    const { deps, appels } = fake();
+    const r = await modifierTache(parse({ libelle: "Nouveau", confirmer: true }), deps);
+    const body = posts(appels)[0]!.body!;
+    assert.equal(body.get("responsableExterneId"), "12");
+    assert.equal(body.get("composant"), "Front");
+    assert.ok("mode" in r && r.changements.responsableExterneId === undefined);
+  } finally {
+    Object.assign(detail, { responsableExterneId: null, composant: null });
+  }
 });
