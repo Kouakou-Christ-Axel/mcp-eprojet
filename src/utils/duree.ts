@@ -5,7 +5,9 @@ const HEURES_PAR_JOUR = 8;
 export const DUREE_AIDE =
   "Durée prévue en HEURES décimales : 0.5 = 30 min, 1.5 = 1 h 30, 8 = 1 jour de travail (pas de 0.25, " +
   "de 0.25 à 300). Ne jamais fournir Jour prév ni H. prév : E-Projet les attend en jours (1 jour = 8 h) " +
-  "et en heures, ils sont calculés à partir de cette valeur.";
+  "et en heures, ils sont calculés à partir de cette valeur. " +
+  "Jour prév va par pas de 0.25 jour (= 2 h) : toujours arrondi au quart de jour supérieur, minimum 0.25, " +
+  "même pour moins de 2 h (0.75 h => 0.25 jour ; 2.5 h => 0.5 jour). H. prév reste exacte.";
 
 // Heures décimales (1,5 = 1 h 30) -> H prév ; Jour prév = quart de jour supérieur, min 0,25.
 export function dureeVersJoursHeures(heures: number): { nbHeurePrev: number; nbJourPrev: number } {

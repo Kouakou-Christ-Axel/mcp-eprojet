@@ -6,7 +6,8 @@ import { creerTache, type Deps } from "../services/taches/service.js";
 export const creerTacheDescription =
   "Crée une tâche dans E-Projet. Par défaut dry_run : montre ce qui serait envoyé sans rien créer ; " +
   "passer confirmer=true pour créer vraiment. Dates en AAAA-MM-JJ, durée en heures décimales " +
-  "(duree_heures : 0.5 = 30 min, 8 = 1 jour ; Jour prév et H. prév sont calculés, ne pas les fournir). gravite obligatoire si nature=ANOMALIE. " +
+  "(duree_heures : 0.5 = 30 min, 8 = 1 jour ; Jour prév et H. prév sont calculés, ne pas les fournir ; Jour prév est arrondi au quart de jour " +
+  "supérieur, 0.25 minimum même sous 2 h). gravite obligatoire si nature=ANOMALIE. " +
   "Le responsable interne est l'utilisateur connecté. Si plusieurs responsables externes " +
   "correspondent, la liste est renvoyée : relancer avec le nom complet.";
 
