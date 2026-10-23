@@ -1,20 +1,22 @@
 import { config } from "../config.js";
+import { estExpiree } from "./expiree.js";
 import { ensureSession } from "./session.js";
 
-const expired = (res: Response) =>
-  res.status === 401 || (res.status === 302 && /login/i.test(res.headers.get("location") ?? ""));
-
-// Requête authentifiée ; session expirée (401 ou 302 -> login) => relogin puis 1 seul retry.
+// Requête authentifiée ; session expirée => relogin puis 1 seul retry.
 export async function api(path: string, init: RequestInit = {}): Promise<Response> {
-  const call = async (force: boolean) =>
-    fetch(`${config.EPROJET_BASE_URL}${path}`, {
+  const call = async (perime?: string) => {
+    const cookie = await ensureSession(perime);
+    const res = await fetch(`${config.EPROJET_BASE_URL}${path}`, {
       ...init,
       redirect: "manual",
-      headers: { ...init.headers, Cookie: await ensureSession(force) },
+      headers: { ...init.headers, Cookie: cookie },
     });
-  const res = await call(false);
-  if (!expired(res)) return res;
-  const retry = await call(true);
-  if (expired(retry)) throw new Error("Session E-Projet expirée et relogin sans effet");
-  return retry;
+    return { res, cookie };
+  };
+  const first = await call();
+  if (!(await estExpiree(first.res))) return first.res;
+  const retry = await call(first.cookie);
+  if (await estExpiree(retry.res))
+    throw new Error("Session E-Projet expirée et relogin sans effet");
+  return retry.res;
 }

@@ -20,8 +20,10 @@ async function doLogin(): Promise<void> {
 }
 
 // Mutex : les appels parallèles partagent le même login en cours.
-export async function ensureSession(force = false): Promise<string> {
-  if (force) cookie = undefined;
+// `perime` = cookie qui vient d'échouer : on ne le jette que s'il est encore le cookie courant
+// (sinon un autre appel l'a déjà renouvelé, et on évite un relogin en cascade).
+export async function ensureSession(perime?: string): Promise<string> {
+  if (perime && cookie === perime) cookie = undefined;
   if (!cookie) {
     pending ??= doLogin().finally(() => (pending = undefined));
     await pending;
