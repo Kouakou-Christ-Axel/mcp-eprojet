@@ -2,9 +2,9 @@ import { config } from "../config.js";
 import { ensureSession } from "./session.js";
 
 const expired = (res: Response) =>
-  res.status === 302 && /login/i.test(res.headers.get("location") ?? "");
+  res.status === 401 || (res.status === 302 && /login/i.test(res.headers.get("location") ?? ""));
 
-// Requête authentifiée ; session expirée (302 -> login) => relogin puis 1 seul retry.
+// Requête authentifiée ; session expirée (401 ou 302 -> login) => relogin puis 1 seul retry.
 export async function api(path: string, init: RequestInit = {}): Promise<Response> {
   const call = async (force: boolean) =>
     fetch(`${config.EPROJET_BASE_URL}${path}`, {
