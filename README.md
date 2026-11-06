@@ -61,6 +61,23 @@ claude mcp add eprojet --scope user -- node --env-file=/chemin/vers/.env /chemin
 }
 ```
 
+### Brancher dans OpenCode (`opencode.json`)
+
+Fichier global `~/.config/opencode/opencode.json`, ou `opencode.json` à la racine d'un projet :
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "eprojet": {
+      "type": "local",
+      "command": ["node", "--env-file=/chemin/vers/.env", "/chemin/vers/dist/index.js"],
+      "enabled": true
+    }
+  }
+}
+```
+
 Les identifiants restent dans `.env` : Node les charge avec `--env-file`, ils ne sont jamais copiés dans la
 configuration de Claude. Après chaque modification du code : `pnpm build` puis relancer le client.
 
