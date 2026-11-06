@@ -139,6 +139,18 @@ Les dates sont au format `AAAA-MM-JJ`. Les listes sont limitées (20 par défaut
 - Le HTML d'E-Projet peut changer : les sélecteurs sont isolés (`src/utils/parse.ts`, `activite.ts`,
   `timesheet/page.ts`) pour qu'un changement ne demande qu'une adaptation locale.
 
+## Skills
+
+Le dossier [`skills/`](skills) contient deux skills qui guident l'assistant (dry-run, commentaire court,
+vérification) : `eprojet-creer-taches` et `eprojet-completer-taches`. Ils supposent le MCP `eprojet` branché.
+
+| Client      | Installation (depuis la racine du dépôt)                                                    |
+| ----------- | ------------------------------------------------------------------------------------------- |
+| Claude Code | `cp -r skills/* ~/.claude/skills/` (ou dans `.claude/skills/` d'un projet pour le partager) |
+| OpenCode    | `cp -r skills/* ~/.config/opencode/skills/` (OpenCode lit aussi `~/.claude/skills/`)        |
+
+Redémarrez le client ensuite. Les noms de projets cités dans les skills sont à adapter à votre équipe.
+
 ## Contribuer
 
 Les contributions sont bienvenues (issue ou pull request).
